@@ -1,18 +1,3 @@
-/*
- * Copyright (C) The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.google.android.gms.samples.vision.face.facetracker.ui.camera;
 
 import android.content.Context;
@@ -49,7 +34,8 @@ public class GraphicOverlay extends View {
     private float mWidthScaleFactor = 1.0f;
     private int mPreviewHeight;
     private float mHeightScaleFactor = 1.0f;
-    private int mFacing = CameraSource.CAMERA_FACING_BACK;
+    private int mBackFacing = CameraSource.CAMERA_FACING_BACK;
+    private int mFrontFacing = CameraSource.CAMERA_FACING_FRONT;
     private Set<Graphic> mGraphics = new HashSet<>();
 
     /**
@@ -98,7 +84,7 @@ public class GraphicOverlay extends View {
          * system.
          */
         public float translateX(float x) {
-            if (mOverlay.mFacing == CameraSource.CAMERA_FACING_FRONT) {
+            if (mOverlay.mFrontFacing == CameraSource.CAMERA_FACING_FRONT) {
                 return mOverlay.getWidth() - scaleX(x);
             } else {
                 return scaleX(x);
@@ -160,7 +146,7 @@ public class GraphicOverlay extends View {
         synchronized (mLock) {
             mPreviewWidth = previewWidth;
             mPreviewHeight = previewHeight;
-            mFacing = facing;
+            mFrontFacing = facing;
         }
         postInvalidate();
     }

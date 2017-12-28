@@ -15,8 +15,12 @@
  */
 package com.google.android.gms.samples.vision.face.facetracker;
 
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
@@ -51,6 +55,9 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private volatile Face mFace;
     private int mFaceId;
     private float mFaceHappiness;
+
+    public Bitmap maskBitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.mask);
+    public Matrix maskMatrix = new Matrix();
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -99,6 +106,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
+        canvas.drawBitmap(maskBitmap,maskMatrix,null);
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
         canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
         canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);

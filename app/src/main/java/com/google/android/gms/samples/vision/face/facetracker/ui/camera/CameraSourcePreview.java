@@ -15,6 +15,7 @@
  */
 package com.google.android.gms.samples.vision.face.facetracker.ui.camera;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
@@ -81,6 +82,7 @@ public class CameraSourcePreview extends ViewGroup {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void startIfReady() throws IOException {
         if (mStartRequested && mSurfaceAvailable) {
             mCameraSource.start(mSurfaceView.getHolder());
