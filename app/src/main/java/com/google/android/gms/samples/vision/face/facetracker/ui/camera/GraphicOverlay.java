@@ -1,10 +1,13 @@
 package com.google.android.gms.samples.vision.face.facetracker.ui.camera;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.google.android.gms.samples.vision.face.facetracker.R;
 import com.google.android.gms.vision.CameraSource;
 
 import java.util.HashSet;
@@ -49,6 +52,8 @@ public class GraphicOverlay extends View {
         public Graphic(GraphicOverlay overlay) {
             mOverlay = overlay;
         }
+
+
 
         /**
          * Draw the graphic on the supplied canvas.  Drawing should use the following methods to

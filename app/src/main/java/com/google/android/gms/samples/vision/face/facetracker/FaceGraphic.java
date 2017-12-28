@@ -15,6 +15,7 @@
  */
 package com.google.android.gms.samples.vision.face.facetracker;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -55,8 +56,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private volatile Face mFace;
     private int mFaceId;
     private float mFaceHappiness;
+    private Resources maskResource;
 
-    public Bitmap maskBitmap = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.mask);
+    public Intent intent;
+    public Bitmap maskBitmapGraphic;
     public Matrix maskMatrix = new Matrix();
 
     FaceGraphic(GraphicOverlay overlay) {
@@ -76,7 +79,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mBoxPaint.setColor(selectedColor);
         mBoxPaint.setStyle(Paint.Style.STROKE);
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
+        //maskBitmapGraphic = intent.getParcelableExtra("BitmapImage");
     }
+
+
 
     void setId(int id) {
         mFaceId = id;
@@ -106,12 +112,12 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
-        canvas.drawBitmap(maskBitmap,maskMatrix,null);
+        //int i = maskBitmapGraphic.getByteCount();
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
         canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
         canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
         canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);
-
+        //canvas.drawText("Bitmap height"+ i,x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
         // Draws a bounding box around the face.
         float xOffset = scaleX(face.getWidth() / 2.0f);
         float yOffset = scaleY(face.getHeight() / 2.0f);
@@ -120,5 +126,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
+        //canvas.drawBitmap(maskBitmapGraphic,maskMatrix,null);
     }
+
 }
