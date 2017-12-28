@@ -45,9 +45,6 @@ public final class FaceTrackerActivity extends AppCompatActivity {
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     public Bitmap maskBitmap;
-    //==============================================================================================
-    // Activity Methods
-    //==============================================================================================
 
     /**
      * Initializes the UI and initiates the creation of a face detector.
@@ -59,6 +56,8 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         mPreview = (CameraSourcePreview) findViewById(R.id.preview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         maskBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.mask);
+        Image image = new Image();
+        image.setBitmap(maskBitmap);
         //Intent intent = new Intent(this, FaceTrackerActivity.class);
         //intent.putExtra("BitmapImage", maskBitmap);
         // Check for the camera permission before accessing the camera.  If the
@@ -73,11 +72,7 @@ public final class FaceTrackerActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Handles the requesting of the camera permission.  This includes
-     * showing a "Snackbar" message of why the permission is needed then
-     * sending the request.
-     */
+
     private void requestCameraPermission() {
         Log.w(TAG, "Camera permission is not granted. Requesting permission");
 

@@ -1,18 +1,3 @@
-/*
- * Copyright (C) The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.google.android.gms.samples.vision.face.facetracker;
 
 import android.content.Intent;
@@ -23,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.util.Log;
 
 import com.google.android.gms.samples.vision.face.facetracker.ui.camera.GraphicOverlay;
 import com.google.android.gms.vision.face.Face;
@@ -53,13 +39,15 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private Paint mIdPaint;
     private Paint mBoxPaint;
 
+
     private volatile Face mFace;
     private int mFaceId;
     private float mFaceHappiness;
     private Resources maskResource;
 
     public Intent intent;
-    public Bitmap maskBitmapGraphic;
+    public Image image = new Image();
+    public Bitmap maskBitmapGraphic = image.getBitmap();
     public Matrix maskMatrix = new Matrix();
 
     FaceGraphic(GraphicOverlay overlay) {
@@ -79,7 +67,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mBoxPaint.setColor(selectedColor);
         mBoxPaint.setStyle(Paint.Style.STROKE);
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
-        //maskBitmapGraphic = intent.getParcelableExtra("BitmapImage");
+
     }
 
 
@@ -108,6 +96,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             return;
         }
 
+
+
         // Draws a circle at the position of the detected face, with the face's track id below.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
@@ -126,7 +116,13 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
-        //canvas.drawBitmap(maskBitmapGraphic,maskMatrix,null);
+//        canvas.drawPicture();
+        if (maskBitmapGraphic!=null){
+            canvas.drawBitmap(maskBitmapGraphic,maskMatrix,null);
+        }else {
+            Log.d("FaceGraphic", "No bitmap");
+        }
+
     }
 
 }
