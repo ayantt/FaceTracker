@@ -47,11 +47,14 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
     public Intent intent;
     public Image image = new Image();
-    public Bitmap maskBitmapGraphic = image.getBitmap();
+    public Bitmap maskBitmapGraphic;
     public Matrix maskMatrix = new Matrix();
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
+
+        Image image = FaceTrackerActivity.getImageFromActivity();
+        maskBitmapGraphic = image.getBitmap();
 
         mCurrentColorIndex = (mCurrentColorIndex + 1) % COLOR_CHOICES.length;
         final int selectedColor = COLOR_CHOICES[mCurrentColorIndex];
@@ -117,9 +120,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
 //        canvas.drawPicture();
-        if (maskBitmapGraphic!=null){
-            canvas.drawBitmap(maskBitmapGraphic,maskMatrix,null);
-        }else {
+        if (maskBitmapGraphic!=null) canvas.drawBitmap(maskBitmapGraphic, maskMatrix, null);
+        else {
             Log.d("FaceGraphic", "No bitmap");
         }
 
