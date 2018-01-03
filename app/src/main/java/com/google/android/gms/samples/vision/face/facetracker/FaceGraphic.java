@@ -3,7 +3,6 @@ package com.google.android.gms.samples.vision.face.facetracker;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -48,7 +47,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     public Intent intent;
     public Image image = new Image();
     public Bitmap maskBitmapGraphic;
-    public Matrix maskMatrix = new Matrix();
+    public Matrix rotateMatrix = new Matrix();
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -80,18 +79,12 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     }
 
 
-    /**
-     * Updates the face instance from the detection of the most recent frame.  Invalidates the
-     * relevant portions of the overlay to trigger a redraw.
-     */
     void updateFace(Face face) {
         mFace = face;
         postInvalidate();
     }
 
-    /**
-     * Draws the face annotations for position on the supplied canvas.
-     */
+
     @Override
     public void draw(Canvas canvas) {
         Face face = mFace;
@@ -99,7 +92,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
             return;
         }
 
-
+        float rotationY = face.getEulerY();
+        float rotationZ = face.getEulerZ();
+        float alignX = rotationZ*4;
+        float alignY = rotationZ*4;
 
         // Draws a circle at the position of the detected face, with the face's track id below.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
@@ -107,21 +103,27 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
         //int i = maskBitmapGraphic.getByteCount();
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-        canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
-        canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
-        canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);
-        //canvas.drawText("Bitmap height"+ i,x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
-        // Draws a bounding box around the face.
-        float xOffset = scaleX(face.getWidth() / 2.0f);
-        float yOffset = scaleY(face.getHeight() / 2.0f);
-        float left = x - xOffset;
-        float top = y - yOffset;
-        float right = x + xOffset;
-        float bottom = y + yOffset;
-        canvas.drawRect(left, top, right, bottom, mBoxPaint);
+
+        float xOffset = scaleX(face.getWidth() / 3.0f);
+        float yOffset = scaleY(face.getHeight() / 3.0f);
+        float leftMask = (x - (xOffset-alignX));
+        float topMask = (y - (yOffset+alignY));
+        Log.d("X,Y: ",leftMask+", "+topMask);
+        //canvas.drawRect(left, top, right, bottom, mBoxPaint);
 //        canvas.drawPicture();
-        if (maskBitmapGraphic!=null) canvas.drawBitmap(maskBitmapGraphic, maskMatrix, null);
-        else {
+        Bitmap maskBitmapGraphicScaled, rotatedBitmap;
+        if (maskBitmapGraphic!=null) {
+            rotateMatrix.postRotate(rotationZ);
+            maskBitmapGraphicScaled = Bitmap.createScaledBitmap(maskBitmapGraphic, (int) Math.round(face.getWidth() * 1.5),
+                    Math.round(face.getHeight() * 2), false);
+            rotatedBitmap = Bitmap.createBitmap(maskBitmapGraphicScaled,0,0,
+                    maskBitmapGraphicScaled.getWidth(),maskBitmapGraphicScaled.getHeight(),rotateMatrix,true);
+            canvas.drawBitmap(rotatedBitmap, leftMask, topMask, null);
+            Log.d("R",maskBitmapGraphicScaled.getHeight()+"x"+maskBitmapGraphicScaled.getWidth()
+                    +", "+rotatedBitmap.getHeight()+"x"+rotatedBitmap.getWidth());
+            Log.d("R", String.valueOf(rotationZ));
+            rotateMatrix.postRotate(-rotationZ);
+        } else {
             Log.d("FaceGraphic", "No bitmap");
         }
 
