@@ -106,6 +106,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float topMask = (y - (yOffset+alignY));
         Log.d("X,Y: ",leftMask+", "+topMask);
 
+        //adding mask on face
         Bitmap maskBitmapGraphicScaled, rotatedBitmap;
         if (maskBitmapGraphic!=null) {
             rotateMatrix.postRotate(rotationZ);
