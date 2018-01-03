@@ -97,20 +97,15 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float alignX = rotationZ*4;
         float alignY = rotationZ*4;
 
-        // Draws a circle at the position of the detected face, with the face's track id below.
         float x = translateX(face.getPosition().x + face.getWidth() / 2);
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
-        canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
-        //int i = maskBitmapGraphic.getByteCount();
-        canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
 
         float xOffset = scaleX(face.getWidth() / 3.0f);
         float yOffset = scaleY(face.getHeight() / 3.0f);
         float leftMask = (x - (xOffset-alignX));
         float topMask = (y - (yOffset+alignY));
         Log.d("X,Y: ",leftMask+", "+topMask);
-        //canvas.drawRect(left, top, right, bottom, mBoxPaint);
-//        canvas.drawPicture();
+
         Bitmap maskBitmapGraphicScaled, rotatedBitmap;
         if (maskBitmapGraphic!=null) {
             rotateMatrix.postRotate(rotationZ);
@@ -126,6 +121,7 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         } else {
             Log.d("FaceGraphic", "No bitmap");
         }
+        canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
 
     }
 
