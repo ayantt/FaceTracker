@@ -48,6 +48,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     public Image image = new Image();
     public Bitmap maskBitmapGraphic;
     public Matrix rotateMatrix = new Matrix();
+    float prevWidth = 0;
+    float prevHeight = 0;
 
     FaceGraphic(GraphicOverlay overlay) {
         super(overlay);
@@ -91,17 +93,29 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         if (face == null) {
             return;
         }
+        float faceWidth;
+        float faceHeight;
+        float threshP = prevWidth +((prevWidth*5)/100);
+        float threshN = prevWidth -((prevWidth*5)/100);
+        if (threshN>face.getWidth() || face.getWidth()>threshP){
+            faceWidth = face.getWidth();
+            faceHeight = face.getHeight();
+        }else {
+            faceWidth = prevWidth;
+            faceHeight = prevHeight;
+        }
 
         float rotationY = face.getEulerY();
         float rotationZ = face.getEulerZ();
         float alignX = rotationZ*4;
         float alignY = rotationZ*4;
+        Log.d("Face",Math.round(faceHeight)+"x"+Math.round(faceWidth));
 
-        float x = translateX(face.getPosition().x + face.getWidth() / 2);
-        float y = translateY(face.getPosition().y + face.getHeight() / 2);
+        float x = translateX(face.getPosition().x + faceWidth / 2);
+        float y = translateY(face.getPosition().y + faceHeight / 2);
 
-        float xOffset = scaleX(face.getWidth() / 3.0f);
-        float yOffset = scaleY(face.getHeight() / 3.0f);
+        float xOffset = scaleX(faceWidth / 3.0f);
+        float yOffset = scaleY(faceHeight / 3.0f);
         float leftMask = (x - (xOffset-alignX));
         float topMask = (y - (yOffset+alignY));
         Log.d("X,Y: ",leftMask+", "+topMask);
@@ -110,14 +124,19 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         Bitmap maskBitmapGraphicScaled, rotatedBitmap;
         if (maskBitmapGraphic!=null) {
             rotateMatrix.postRotate(rotationZ);
-            maskBitmapGraphicScaled = Bitmap.createScaledBitmap(maskBitmapGraphic, (int) Math.round(face.getWidth() * 1.5),
-                    Math.round(face.getHeight() * 2), false);
+            maskBitmapGraphicScaled = Bitmap.createScaledBitmap(maskBitmapGraphic, (int) Math.round(faceWidth * 1.5),
+                    Math.round(faceHeight * 2), false);
             rotatedBitmap = Bitmap.createBitmap(maskBitmapGraphicScaled,0,0,
                     maskBitmapGraphicScaled.getWidth(),maskBitmapGraphicScaled.getHeight(),rotateMatrix,true);
-            canvas.drawBitmap(rotatedBitmap, leftMask, topMask, null);
+            float rotatedOffsetX = rotatedBitmap.getWidth()-maskBitmapGraphicScaled.getWidth();
+            float rotatedOffsetY = rotatedBitmap.getHeight()-maskBitmapGraphicScaled.getHeight();
+
+                canvas.drawBitmap(rotatedBitmap, leftMask-rotatedOffsetX, topMask, null);
+                prevWidth= faceWidth;
+                prevHeight = faceHeight;
             Log.d("R",maskBitmapGraphicScaled.getHeight()+"x"+maskBitmapGraphicScaled.getWidth()
                     +", "+rotatedBitmap.getHeight()+"x"+rotatedBitmap.getWidth());
-            Log.d("R", String.valueOf(rotationZ));
+            //Log.d("R", String.valueOf(rotationZ));
             rotateMatrix.postRotate(-rotationZ);
         } else {
             Log.d("FaceGraphic", "No bitmap");
