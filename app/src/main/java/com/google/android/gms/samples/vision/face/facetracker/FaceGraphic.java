@@ -116,8 +116,8 @@ class FaceGraphic extends GraphicOverlay.Graphic {
 
         float xOffset = scaleX(faceWidth / 3.0f);
         float yOffset = scaleY(faceHeight / 3.0f);
-        float leftMask = (x - (xOffset-alignX));
-        float topMask = (y - (yOffset+alignY));
+        float leftMask = x - xOffset;
+        float topMask = y - yOffset;
         Log.d("X,Y: ",leftMask+", "+topMask);
 
         //adding mask on face
@@ -128,10 +128,10 @@ class FaceGraphic extends GraphicOverlay.Graphic {
                     Math.round(faceHeight * 2), false);
             rotatedBitmap = Bitmap.createBitmap(maskBitmapGraphicScaled,0,0,
                     maskBitmapGraphicScaled.getWidth(),maskBitmapGraphicScaled.getHeight(),rotateMatrix,true);
-            float rotatedOffsetX = rotatedBitmap.getWidth()-maskBitmapGraphicScaled.getWidth();
-            float rotatedOffsetY = rotatedBitmap.getHeight()-maskBitmapGraphicScaled.getHeight();
+            float rotatedOffsetX = (rotatedBitmap.getWidth()-maskBitmapGraphicScaled.getWidth())/2;
+            float rotatedOffsetY = (rotatedBitmap.getHeight()-maskBitmapGraphicScaled.getHeight())/2;
 
-                canvas.drawBitmap(rotatedBitmap, leftMask-rotatedOffsetX, topMask, null);
+                canvas.drawBitmap(rotatedBitmap, leftMask-rotatedOffsetX, topMask-rotatedOffsetY, null);
                 prevWidth= faceWidth;
                 prevHeight = faceHeight;
             Log.d("R",maskBitmapGraphicScaled.getHeight()+"x"+maskBitmapGraphicScaled.getWidth()
