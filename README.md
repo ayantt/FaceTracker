@@ -1,7 +1,7 @@
 # FaceTracker
 I worked on this project for my thesis which was based on image processing.
 
-![](https://goo.gl/images/QipH7M)
+![](https://goo.gl/images/QipH7M.png)
 
 
 <p align="center">
